@@ -1,18 +1,35 @@
 import { useEffect, useState } from "react";
 
 function LandingPage() {
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const move = (e) => {
+      setPos({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener("mousemove", move);
+    return () => window.removeEventListener("mousemove", move);
+  }, []);
+
   return (
-    <div className="w-screen min-h-screen bg-[#0B0F14] text-[#E6EDF3] overflow-x-hidden">
-      {/* Background Glow */}
-      <div className="absolute top-[-100px] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#7C5CFF]/20 blur-[120px] rounded-full"></div>
+    <div className="relative w-full min-h-screen bg-[#0B0F14] text-[#E6EDF3] overflow-x-hidden">
+      {/* 🔥 Mouse Spotlight */}
+      <div className="spotlight" style={{ left: pos.x, top: pos.y }} />
+
+      {/* 🔥 Animated Background */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute w-[700px] h-[700px] bg-[#00D1FF]/20 blur-[160px] rounded-full top-[5%] left-[5%] animate-glow"></div>
+
+        <div className="absolute w-[600px] h-[600px] bg-[#7C5CFF]/20 blur-[160px] rounded-full bottom-[5%] right-[5%] animate-glow-reverse"></div>
+      </div>
 
       {/* Navbar */}
-      <nav className="relative z-10 w-full flex justify-between items-center px-6 md:px-12 py-6">
-        <h1 className="text-xl font-bold text-[#00D1FF] tracking-wide">
+      <nav className="relative z-10 w-full flex justify-between items-center px-6 md:px-12 py-6 backdrop-blur-xl bg-[#0B0F14]/40 border-b border-[#1f2933]">
+        <h1 className="text-xl font-bold text-[#00D1FF] tracking-wider">
           FIT2099
         </h1>
 
-        <div className="flex gap-8 text-[#8B98A5] text-sm">
+        <div className="hidden md:flex gap-10 text-[#8B98A5] text-sm">
           <a href="#" className="hover:text-white transition">
             Home
           </a>
@@ -29,11 +46,10 @@ function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="relative z-10 flex flex-col items-center text-center mt-28 px-6">
-        <h2 className="text-5xl md:text-7xl font-bold leading-tight max-w-5xl">
-          Redefine Your
-          <span className="bg-gradient-to-r from-[#00D1FF] to-[#7C5CFF] bg-clip-text text-transparent">
-            {" "}
+      <section className="relative z-10 flex flex-col items-center text-center mt-32 px-6">
+        <h2 className="text-5xl md:text-7xl font-extrabold leading-tight max-w-5xl tracking-tight">
+          Redefine Your{" "}
+          <span className="bg-gradient-to-r from-[#00D1FF] via-[#7C5CFF] to-[#00D1FF] bg-clip-text text-transparent">
             Physique
           </span>
         </h2>
@@ -43,7 +59,7 @@ function LandingPage() {
         </p>
 
         <div className="mt-10 flex gap-4">
-          <button className="relative bg-[#00D1FF] text-black px-8 py-3 rounded-xl font-semibold hover:scale-105 transition shadow-[0_0_25px_#00D1FF]">
+          <button className="bg-[#00D1FF] text-black px-8 py-3 rounded-xl font-semibold transition hover:scale-105 shadow-[0_0_40px_#00D1FF] hover:shadow-[0_0_70px_#00D1FF]">
             Get Started
           </button>
 
@@ -54,17 +70,17 @@ function LandingPage() {
       </section>
 
       {/* Features */}
-      <section className="relative z-10 w-full mt-32 px-6 md:px-12 grid md:grid-cols-3 gap-8">
+      <section className="relative z-10 w-full mt-32 px-6 md:px-12 grid grid-cols-1 md:grid-cols-3 gap-8">
         {features.map((f, i) => (
           <div
             key={i}
-            className="group bg-[#121821]/80 backdrop-blur-xl p-6 rounded-2xl border border-[#1f2933] hover:border-[#00D1FF]/40 transition hover:scale-[1.03]"
+            className="group bg-[#121821]/70 backdrop-blur-2xl p-6 rounded-2xl border border-[#1f2933] hover:border-[#00D1FF]/40 transition duration-300 hover:scale-[1.05] hover:shadow-[0_0_40px_rgba(0,209,255,0.2)]"
           >
             <div className="text-3xl mb-4" style={{ color: f.color }}>
               {f.icon}
             </div>
 
-            <h3 className="text-xl font-semibold group-hover:text-white">
+            <h3 className="text-xl font-semibold group-hover:text-white transition">
               {f.title}
             </h3>
 
@@ -75,13 +91,15 @@ function LandingPage() {
 
       {/* CTA */}
       <section className="relative z-10 mt-32 text-center px-6">
-        <h3 className="text-4xl font-bold">Start Your Evolution</h3>
+        <h3 className="text-4xl font-bold tracking-tight">
+          Start Your Evolution
+        </h3>
 
         <p className="text-[#8B98A5] mt-4">
           Join the next generation of fitness.
         </p>
 
-        <button className="mt-8 bg-[#00FF88] text-black px-10 py-3 rounded-xl font-semibold hover:scale-105 transition shadow-[0_0_25px_#00FF88]">
+        <button className="mt-8 bg-[#00FF88] text-black px-10 py-3 rounded-xl font-semibold transition hover:scale-105 shadow-[0_0_40px_#00FF88] hover:shadow-[0_0_70px_#00FF88]">
           Join Now
         </button>
       </section>
@@ -114,4 +132,5 @@ const features = [
     color: "#FF3B3B",
   },
 ];
+
 export default LandingPage;
