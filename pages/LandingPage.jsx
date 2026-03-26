@@ -14,13 +14,12 @@ function LandingPage() {
 
   return (
     <div className="relative w-full min-h-screen bg-[#0B0F14] text-[#E6EDF3] overflow-x-hidden">
-      {/* 🔥 Mouse Spotlight */}
+      {/* Spotlight */}
       <div className="spotlight" style={{ left: pos.x, top: pos.y }} />
 
-      {/* 🔥 Animated Background */}
+      {/* Background Glow */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute w-[700px] h-[700px] bg-[#00D1FF]/20 blur-[160px] rounded-full top-[5%] left-[5%] animate-glow"></div>
-
         <div className="absolute w-[600px] h-[600px] bg-[#7C5CFF]/20 blur-[160px] rounded-full bottom-[5%] right-[5%] animate-glow-reverse"></div>
       </div>
 
@@ -30,7 +29,7 @@ function LandingPage() {
           FIT2099
         </h1>
 
-        <div className="hidden md:flex gap-10 text-[#8B98A5] text-sm items-center">
+        <div className="hidden md:flex gap-6 items-center text-[#8B98A5] text-sm">
           <a href="#" className="hover:text-white transition">
             Home
           </a>
@@ -46,16 +45,23 @@ function LandingPage() {
 
           <Link
             to="/login"
-            className="ml-4 px-5 py-2 rounded-lg bg-[#00D1FF] text-black font-semibold shadow-[0_0_20px_#00D1FF] hover:shadow-[0_0_40px_#00D1FF] transition"
+            className="px-4 py-2 rounded-lg border border-[#1f2933] hover:border-[#00D1FF] hover:text-white transition"
           >
             Login
+          </Link>
+
+          <Link
+            to="/signup"
+            className="px-5 py-2 rounded-lg bg-[#00D1FF] text-black font-semibold shadow-[0_0_20px_#00D1FF] hover:shadow-[0_0_40px_#00D1FF] transition"
+          >
+            Sign Up
           </Link>
         </div>
       </nav>
 
       {/* Hero */}
       <section className="relative z-10 flex flex-col items-center text-center mt-32 px-6">
-        <h2 className="text-5xl md:text-7xl font-extrabold leading-tight max-w-5xl tracking-tight">
+        <h2 className="text-5xl md:text-7xl font-extrabold leading-tight max-w-5xl">
           Redefine Your{" "}
           <span className="bg-gradient-to-r from-[#00D1FF] via-[#7C5CFF] to-[#00D1FF] bg-clip-text text-transparent">
             Physique
@@ -66,17 +72,20 @@ function LandingPage() {
           Precision training. Intelligent tracking. Elite transformation.
         </p>
 
-        <div className="mt-10 flex gap-4">
+        <div className="mt-10 flex gap-4 flex-wrap justify-center">
           <Link
-            to="/login"
-            className="bg-[#00D1FF] text-black px-8 py-3 rounded-xl font-semibold transition hover:scale-105 shadow-[0_0_40px_#00D1FF] hover:shadow-[0_0_70px_#00D1FF]"
+            to="/signup"
+            className="bg-[#00D1FF] text-black px-8 py-3 rounded-xl font-semibold transition hover:scale-105 shadow-[0_0_40px_#00D1FF]"
           >
             Get Started
           </Link>
 
-          <button className="border border-[#7C5CFF] text-[#7C5CFF] px-8 py-3 rounded-xl hover:bg-[#7C5CFF]/10 transition">
-            Learn More
-          </button>
+          <Link
+            to="/login"
+            className="border border-[#7C5CFF] text-[#7C5CFF] px-8 py-3 rounded-xl hover:bg-[#7C5CFF]/10 transition"
+          >
+            Login
+          </Link>
         </div>
       </section>
 
@@ -102,17 +111,15 @@ function LandingPage() {
 
       {/* CTA */}
       <section className="relative z-10 mt-32 text-center px-6">
-        <h3 className="text-4xl font-bold tracking-tight">
-          Start Your Evolution
-        </h3>
+        <h3 className="text-4xl font-bold">Start Your Evolution</h3>
 
         <p className="text-[#8B98A5] mt-4">
           Join the next generation of fitness.
         </p>
 
         <Link
-          to="/login"
-          className="mt-8 inline-block bg-[#00FF88] text-black px-10 py-3 rounded-xl font-semibold transition hover:scale-105 shadow-[0_0_40px_#00FF88] hover:shadow-[0_0_70px_#00FF88]"
+          to="/signup"
+          className="mt-8 inline-block bg-[#00FF88] text-black px-10 py-3 rounded-xl font-semibold transition hover:scale-105 shadow-[0_0_40px_#00FF88]"
         >
           Join Now
         </Link>
