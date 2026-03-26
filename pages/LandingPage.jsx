@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 function LandingPage() {
   const [pos, setPos] = useState({ x: 0, y: 0 });
@@ -29,7 +30,7 @@ function LandingPage() {
           FIT2099
         </h1>
 
-        <div className="hidden md:flex gap-10 text-[#8B98A5] text-sm">
+        <div className="hidden md:flex gap-10 text-[#8B98A5] text-sm items-center">
           <a href="#" className="hover:text-white transition">
             Home
           </a>
@@ -42,6 +43,13 @@ function LandingPage() {
           <a href="#" className="hover:text-white transition">
             Contact
           </a>
+
+          <Link
+            to="/login"
+            className="ml-4 px-5 py-2 rounded-lg bg-[#00D1FF] text-black font-semibold shadow-[0_0_20px_#00D1FF] hover:shadow-[0_0_40px_#00D1FF] transition"
+          >
+            Login
+          </Link>
         </div>
       </nav>
 
@@ -59,9 +67,12 @@ function LandingPage() {
         </p>
 
         <div className="mt-10 flex gap-4">
-          <button className="bg-[#00D1FF] text-black px-8 py-3 rounded-xl font-semibold transition hover:scale-105 shadow-[0_0_40px_#00D1FF] hover:shadow-[0_0_70px_#00D1FF]">
+          <Link
+            to="/login"
+            className="bg-[#00D1FF] text-black px-8 py-3 rounded-xl font-semibold transition hover:scale-105 shadow-[0_0_40px_#00D1FF] hover:shadow-[0_0_70px_#00D1FF]"
+          >
             Get Started
-          </button>
+          </Link>
 
           <button className="border border-[#7C5CFF] text-[#7C5CFF] px-8 py-3 rounded-xl hover:bg-[#7C5CFF]/10 transition">
             Learn More
@@ -99,9 +110,12 @@ function LandingPage() {
           Join the next generation of fitness.
         </p>
 
-        <button className="mt-8 bg-[#00FF88] text-black px-10 py-3 rounded-xl font-semibold transition hover:scale-105 shadow-[0_0_40px_#00FF88] hover:shadow-[0_0_70px_#00FF88]">
+        <Link
+          to="/login"
+          className="mt-8 inline-block bg-[#00FF88] text-black px-10 py-3 rounded-xl font-semibold transition hover:scale-105 shadow-[0_0_40px_#00FF88] hover:shadow-[0_0_70px_#00FF88]"
+        >
           Join Now
-        </button>
+        </Link>
       </section>
 
       {/* Footer */}
