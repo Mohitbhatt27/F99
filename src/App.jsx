@@ -4,6 +4,7 @@ import viteLogo from "./assets/vite.svg";
 import heroImg from "./assets/hero.png";
 import LandingPage from "../pages/LandingPage";
 import "./App.css";
+import Profile from "../components/Profile";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
