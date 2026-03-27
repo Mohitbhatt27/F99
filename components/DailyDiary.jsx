@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import DiaryChart from "./DiaryChart";
 import DiaryHeatmap from "./DiaryHeatmap";
 
-export default function DailyDiary() {
-  const [entries, setEntries] = useState([]);
+export default function DailyDiary({ entries, setEntries }) {
   const [message, setMessage] = useState("");
 
   const [entry, setEntry] = useState({
