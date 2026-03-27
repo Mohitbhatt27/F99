@@ -1,4 +1,5 @@
 import { useState } from "react";
+import DailyDiary from "./DailyDiary";
 
 export default function Profile() {
   const [open, setOpen] = useState(false);
@@ -103,6 +104,9 @@ export default function Profile() {
         </div>
       </div>
 
+      {/* Daily Diary Component */}
+      <DailyDiary />
+
       {/* Modal */}
       {open && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
@@ -166,7 +170,7 @@ export default function Profile() {
   );
 }
 
-/* Internal Components */
+/* Internal components */
 
 function Stat({ label, value }) {
   return (
