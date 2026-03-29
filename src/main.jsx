@@ -7,6 +7,17 @@ import LandingPage from "../pages/LandingPage.jsx";
 import Login from "../pages/LoginPage.jsx";
 import Signup from "../pages/SignUpPage.jsx";
 import Profile from "../components/Profile.jsx";
+const savedTheme = localStorage.getItem("theme");
+
+if (savedTheme === "dark") {
+  document.documentElement.classList.add("dark");
+} else if (!savedTheme) {
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  if (prefersDark) {
+    document.documentElement.classList.add("dark");
+  }
+}
+
 const router = createBrowserRouter([
   {
     path: "/",

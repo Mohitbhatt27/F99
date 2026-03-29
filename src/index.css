@@ -1,4 +1,44 @@
 @import "tailwindcss";
+
+/*  LIGHT THEME (default) */
+:root {
+  --bg: #f7f9fc;
+  --card: #ffffff;
+  --primary: #2563eb;
+  --secondary: #7c3aed;
+  --success: #16a34a;
+  --warning: #f59e0b;
+  --text-main: #0f172a;
+  --text-sub: #64748b;
+}
+
+/*  DARK THEME */
+.dark {
+  --bg: #0b0f14;
+  --card: #121821;
+  --primary: #00d1ff;
+  --secondary: #7c5cff;
+  --success: #00ff88;
+  --warning: #ff3b3b;
+  --text-main: #e6edf3;
+  --text-sub: #8b98a5;
+}
+body {
+  background-color: var(--bg);
+  color: var(--text-main);
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease;
+}
+
+/*  Smooth all UI */
+* {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+}
+
 @keyframes floatGlow {
   0% {
     transform: translate(0px, 0px);
@@ -31,12 +71,14 @@
   animation: floatGlowReverse 18s ease-in-out infinite;
 }
 
-/* 🔥 Mouse spotlight */
+/*  Mouse spotlight */
+/*  Mouse spotlight (theme aware) */
 .spotlight {
   position: absolute;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(0, 209, 255, 0.15), transparent 70%);
+  background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+  opacity: 0.15;
   pointer-events: none;
   transform: translate(-50%, -50%);
   filter: blur(60px);
