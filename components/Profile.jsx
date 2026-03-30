@@ -1,7 +1,8 @@
 import { useState } from "react";
 import DailyDiary from "./DailyDiary";
-
+import { useNavigate } from "react-router-dom";
 export default function Profile() {
+  const navigate = useNavigate();
   const [entries, setEntries] = useState([]);
 
   const [data, setData] = useState({
@@ -34,6 +35,12 @@ export default function Profile() {
             <p className="text-[var(--text-sub)]">
               Fitness Enthusiast • Student
             </p>
+            <button
+              onClick={() => navigate("/food")}
+              className="mt-3 px-4 py-2 bg-[var(--primary)] text-black rounded-lg font-semibold hover:scale-105 transition"
+            >
+              Food Diary
+            </button>
           </div>
         </div>
       </div>

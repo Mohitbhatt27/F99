@@ -7,6 +7,7 @@ import LandingPage from "../pages/LandingPage.jsx";
 import Login from "../pages/LoginPage.jsx";
 import Signup from "../pages/SignUpPage.jsx";
 import Profile from "../components/Profile.jsx";
+import FoodDiary from "../components/FoodDiary.jsx";
 const savedTheme = localStorage.getItem("theme");
 
 if (savedTheme === "dark") {
@@ -39,6 +40,7 @@ const router = createBrowserRouter([
         path: "/profile",
         element: <Profile />,
       },
+      { path: "/food", element: <FoodDiary /> },
     ],
   },
 ]);
