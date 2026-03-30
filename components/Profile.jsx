@@ -15,12 +15,12 @@ export default function Profile() {
   const goals = getGoals(data, entries);
 
   return (
-    <div className="w-full min-h-screen bg-[#0B0F14] text-[#E6EDF3] px-6 md:px-12 py-10">
+    <div className="w-full min-h-screen bg-[var(--bg)] text-[var(--text-main)] px-6 md:px-12 py-10 transition-colors duration-300">
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
           {/* Avatar */}
-          <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#00D1FF] shadow-[0_0_15px_#00D1FF]">
+          <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[var(--primary)] shadow-lg">
             <img
               src="https://i.pravatar.cc/150?img=3"
               alt="profile"
@@ -31,7 +31,9 @@ export default function Profile() {
           {/* Name */}
           <div>
             <h1 className="text-3xl font-bold">Siddhartha</h1>
-            <p className="text-[#8B98A5]">Fitness Enthusiast • Student</p>
+            <p className="text-[var(--text-sub)]">
+              Fitness Enthusiast • Student
+            </p>
           </div>
         </div>
       </div>
@@ -40,24 +42,27 @@ export default function Profile() {
       <div>
         <h2 className="text-xl font-semibold mb-4">Current Goals</h2>
 
-        <div className="bg-[#121821] p-6 rounded-xl border border-[#1f2933] space-y-5">
+        <div className="bg-[var(--card)] p-6 rounded-xl border border-[var(--text-sub)]/20 space-y-5">
           {goals.map((g, i) => (
             <div key={i}>
               <div className="flex justify-between text-sm mb-1">
                 <span>{g.title}</span>
-                <span className="text-[#8B98A5]">
+                <span className="text-[var(--text-sub)]">
                   {Math.round(g.progress)}%
                 </span>
               </div>
 
-              <div className="w-full h-2 bg-[#1f2933] rounded-full">
+              {/* Progress Bar */}
+              <div className="w-full h-2 bg-[var(--text-sub)]/20 rounded-full">
                 <div
-                  className="h-2 rounded-full bg-[#00FF88]"
+                  className="h-2 rounded-full bg-[var(--primary)] transition-all"
                   style={{ width: `${g.progress}%` }}
                 />
               </div>
 
-              <p className="text-xs text-[#8B98A5] mt-1">ETA: {g.eta}</p>
+              <p className="text-xs text-[var(--text-sub)] mt-1">
+                ETA: {g.eta}
+              </p>
             </div>
           ))}
         </div>
@@ -69,7 +74,7 @@ export default function Profile() {
   );
 }
 
-/* 🔥 GOALS ENGINE */
+/*  GOALS ENGINE */
 
 function getGoals(data, entries) {
   const bodyFatStart = 15;

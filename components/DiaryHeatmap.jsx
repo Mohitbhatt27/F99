@@ -14,8 +14,8 @@ export default function DiaryHeatmap({ entries }) {
           return (
             <div
               key={i}
-              className={`w-6 h-6 rounded ${
-                logged ? "bg-[#00FF88]" : "bg-[#1f2933]"
+              className={`w-6 h-6 rounded transition ${
+                logged ? "bg-[var(--primary)]" : "bg-[var(--text-sub)]/20"
               }`}
               title={dateStr}
             />

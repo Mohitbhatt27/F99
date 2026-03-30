@@ -52,7 +52,7 @@ export default function DailyDiary({ entries, setEntries }) {
     setMessage("Entry saved.");
   }
 
-  /*  Analytics */
+  /* Analytics */
 
   const avgRating =
     entries.length > 0
@@ -92,7 +92,7 @@ export default function DailyDiary({ entries, setEntries }) {
 
   const streak = calculateStreak();
 
-  /*  Insight */
+  /* Insight */
   let insight = "Stay consistent.";
 
   if (entries.length < 3) {
@@ -110,7 +110,7 @@ export default function DailyDiary({ entries, setEntries }) {
       {/* Title */}
       <h2 className="text-xl font-semibold mb-6">Daily Fitness Diary</h2>
 
-      {/*  Dashboard */}
+      {/* Dashboard */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <Card label="Entries" value={entries.length} />
         <Card label="Avg Rating" value={avgRating} />
@@ -118,16 +118,16 @@ export default function DailyDiary({ entries, setEntries }) {
         <Card label="Consistency" value={`${consistency}%`} />
       </div>
 
-      {/*  Input */}
-      <div className="bg-[#121821] p-6 rounded-xl border border-[#1f2933] space-y-4">
+      {/* Input */}
+      <div className="bg-[var(--card)] p-6 rounded-xl border border-[var(--text-sub)]/20 space-y-4">
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="text-sm text-[#8B98A5]">Mood</label>
+            <label className="text-sm text-[var(--text-sub)]">Mood</label>
             <select
               name="mood"
               value={entry.mood}
               onChange={handleChange}
-              className="w-full mt-1 px-3 py-2 rounded-lg bg-[#0B0F14] border border-[#1f2933]"
+              className="w-full mt-1 px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--text-sub)]/20"
             >
               <option>😃</option>
               <option>🙂</option>
@@ -138,7 +138,9 @@ export default function DailyDiary({ entries, setEntries }) {
           </div>
 
           <div>
-            <label className="text-sm text-[#8B98A5]">Workout Rating</label>
+            <label className="text-sm text-[var(--text-sub)]">
+              Workout Rating
+            </label>
             <input
               type="number"
               name="rating"
@@ -146,44 +148,44 @@ export default function DailyDiary({ entries, setEntries }) {
               max="10"
               value={entry.rating}
               onChange={handleChange}
-              className="w-full mt-1 px-3 py-2 rounded-lg bg-[#0B0F14] border border-[#1f2933]"
+              className="w-full mt-1 px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--text-sub)]/20"
             />
           </div>
         </div>
 
         <div>
-          <label className="text-sm text-[#8B98A5]">Diary</label>
+          <label className="text-sm text-[var(--text-sub)]">Diary</label>
           <textarea
             name="note"
             value={entry.note}
             onChange={handleChange}
             placeholder="What did you train? How did you feel?"
-            className="w-full mt-1 px-3 py-2 rounded-lg bg-[#0B0F14] border border-[#1f2933] h-24 resize-none"
+            className="w-full mt-1 px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--text-sub)]/20 h-24 resize-none"
           />
         </div>
 
         <button
           onClick={saveEntry}
-          className="bg-[#00FF88] text-black px-6 py-2 rounded-lg font-semibold hover:scale-105 transition"
+          className="bg-[var(--primary)] text-black px-6 py-2 rounded-lg font-semibold hover:scale-105 transition"
         >
           Save Entry
         </button>
 
-        {message && <p className="text-sm text-[#8B98A5]">{message}</p>}
+        {message && <p className="text-sm text-[var(--text-sub)]">{message}</p>}
       </div>
 
-      {/*  Charts + Heatmap */}
+      {/* Charts */}
       <DiaryChart entries={entries} />
       <DiaryHeatmap entries={entries} />
 
-      {/*  Entries */}
+      {/* Entries */}
       <div className="mt-8 space-y-4">
         {entries.map((e, i) => (
           <div
             key={i}
-            className="bg-[#121821] p-5 rounded-xl border border-[#1f2933] hover:border-[#00D1FF]/40 transition"
+            className="bg-[var(--card)] p-5 rounded-xl border border-[var(--text-sub)]/20 hover:border-[var(--primary)]/40 transition"
           >
-            <div className="flex justify-between text-sm text-[#8B98A5] mb-2">
+            <div className="flex justify-between text-sm text-[var(--text-sub)] mb-2">
               <span>{e.date}</span>
               <span>
                 {e.mood} • {e.rating}/10
@@ -195,20 +197,20 @@ export default function DailyDiary({ entries, setEntries }) {
         ))}
       </div>
 
-      {/*  Insight */}
-      <div className="mt-6 text-sm text-[#8B98A5]">
-        Insight: <span className="text-white">{insight}</span>
+      {/* Insight */}
+      <div className="mt-6 text-sm text-[var(--text-sub)]">
+        Insight: <span className="text-[var(--text-main)]">{insight}</span>
       </div>
     </div>
   );
 }
 
-/* Small reusable card */
+/* Card */
 function Card({ label, value }) {
   return (
-    <div className="bg-[#121821] p-4 rounded-lg border border-[#1f2933] text-center">
-      <p className="text-lg font-bold text-[#00D1FF]">{value}</p>
-      <p className="text-xs text-[#8B98A5]">{label}</p>
+    <div className="bg-[var(--card)] p-4 rounded-lg border border-[var(--text-sub)]/20 text-center">
+      <p className="text-lg font-bold text-[var(--primary)]">{value}</p>
+      <p className="text-xs text-[var(--text-sub)]">{label}</p>
     </div>
   );
 }

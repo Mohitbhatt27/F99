@@ -22,45 +22,7 @@ function LandingPage() {
         <div className="absolute w-[700px] h-[700px] bg-[var(--primary)]/20 blur-[160px] rounded-full top-[5%] left-[5%] animate-glow"></div>
         <div className="absolute w-[600px] h-[600px] bg-[var(--secondary)]/20 blur-[160px] rounded-full bottom-[5%] right-[5%] animate-glow-reverse"></div>
       </div>
-      {/* Navbar */}
 
-      <nav className="relative z-10 w-full flex justify-between items-center px-6 md:px-12 py-6 backdrop-blur-xl bg-[var(--bg)]/40 border-b border-[var(--text-sub)]/20">
-        <h1 className="text-xl font-bold text-[var(--primary)] tracking-wider">
-          FIT2099
-        </h1>
-
-        <div className="hidden md:flex gap-6 items-center text-[var(--text-sub)] text-sm">
-          <a href="#" className="hover:text-[var(--text-main)] transition">
-            Home
-          </a>
-          <a href="#" className="hover:text-[var(--text-main)] transition">
-            Programs
-          </a>
-          <a href="#" className="hover:text-[var(--text-main)] transition">
-            Pricing
-          </a>
-          <a href="#" className="hover:text-[var(--text-main)] transition">
-            Contact
-          </a>
-
-          {/* 🔥 THEME BUTTON */}
-          <ThemeToggle />
-
-          <Link
-            to="/login"
-            className="px-4 py-2 rounded-lg border border-[var(--text-sub)]/30 hover:border-[var(--primary)] hover:text-[var(--text-main)] transition"
-          >
-            Login
-          </Link>
-
-          <Link
-            to="/signup"
-            className="px-5 py-2 rounded-lg bg-[var(--primary)] text-white font-semibold hover:scale-105 transition"
-          >
-            Sign Up
-          </Link>
-        </div>
-      </nav>
       {/* Hero */}
       <section className="relative z-10 flex flex-col items-center text-center mt-32 px-6">
         <h2 className="text-5xl md:text-7xl font-extrabold leading-tight max-w-5xl">
