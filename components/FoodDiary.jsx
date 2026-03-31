@@ -1,19 +1,16 @@
 import { useState, useEffect, useRef } from "react";
-
+import { useFood } from "../context/FoodContext";
 const API_KEY = import.meta.env.VITE_USDA_API_KEY;
 
 export default function FoodDiary() {
   const today = new Date().toLocaleDateString();
-
-  const [foods, setFoods] = useState([]);
-  const [water, setWater] = useState(0);
 
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
   const debounceRef = useRef(null);
   const cacheRef = useRef({});
-
+  const { foods, setFoods, water, setWater } = useFood();
   const waterTarget = 3000;
 
   /* 🔥 FETCH */

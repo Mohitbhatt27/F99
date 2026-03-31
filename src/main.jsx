@@ -8,6 +8,7 @@ import Login from "../pages/LoginPage.jsx";
 import Signup from "../pages/SignUpPage.jsx";
 import Profile from "../components/Profile.jsx";
 import FoodDiary from "../components/FoodDiary.jsx";
+import { FoodProvider } from "../context/FoodContext.jsx";
 const savedTheme = localStorage.getItem("theme");
 
 if (savedTheme === "dark") {
@@ -46,6 +47,8 @@ const router = createBrowserRouter([
 ]);
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <FoodProvider>
+      <RouterProvider router={router} />
+    </FoodProvider>
   </StrictMode>,
 );
