@@ -65,7 +65,7 @@ export default function Profile() {
   }, []);
   return (
     <div className="w-full min-h-screen bg-[var(--bg)] text-[var(--text-main)] px-6 md:px-12 py-10 space-y-10 transition-colors duration-300">
-      {/* 🔥 HERO */}
+      {/*  HERO */}
       <div className="p-6 rounded-2xl bg-gradient-to-r from-[var(--primary)]/20 to-transparent border border-[var(--text-sub)]/20 shadow-lg">
         <div className="flex justify-between items-center flex-wrap gap-4">
           <div className="flex items-center gap-4">
@@ -94,20 +94,20 @@ export default function Profile() {
         </div>
       </div>
 
-      {/* 🔥 PROGRESS RINGS */}
+      {/*  PROGRESS RINGS */}
       <div className="flex flex-wrap gap-8 justify-center md:justify-start">
         <ProgressRings value={caloriePercent} label="Calories" />
         <ProgressRings value={proteinPercent} label="Protein" />
         <ProgressRings value={waterPercent} label="Water" />
       </div>
 
-      {/* 🔥 STREAK + INSIGHTS */}
+      {/*  STREAK + INSIGHTS */}
       <div className="grid md:grid-cols-2 gap-6">
         <StreakCard streak={streak} />
         <InsightsPanel protein={totals.protein} water={water} />
       </div>
 
-      {/* 🔥 GOALS */}
+      {/*  GOALS */}
       <div>
         <h2 className="text-xl font-semibold mb-4">Current Goals</h2>
 
@@ -136,7 +136,7 @@ export default function Profile() {
         </div>
       </div>
 
-      {/* 🔥 DIARY */}
+      {/*  DIARY */}
       <div className="bg-[var(--card)] p-6 rounded-xl border border-[var(--text-sub)]/20 shadow-sm">
         <DailyDiary entries={entries} setEntries={setEntries} />
       </div>
@@ -144,7 +144,7 @@ export default function Profile() {
   );
 }
 
-/* 🔥 GOALS ENGINE */
+/*  GOALS ENGINE */
 
 function getGoals(data, entries) {
   const bodyFatStart = 15;
