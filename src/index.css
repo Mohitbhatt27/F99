@@ -2,6 +2,8 @@
 
 /*  LIGHT THEME (default) */
 :root {
+  --ring-bg: rgba(0, 0, 0, 0.15);
+
   --bg: #f7f9fc;
   --card: #ffffff;
   --primary: #2563eb;
@@ -14,6 +16,8 @@
 
 /*  DARK THEME */
 .dark {
+  --ring-bg: rgba(255, 255, 255, 0.15);
+
   --bg: #0b0f14;
   --card: #121821;
   --primary: #00d1ff;

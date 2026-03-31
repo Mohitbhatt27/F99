@@ -9,7 +9,7 @@ export default function ProgressRing({ value, label }) {
     <div className="flex flex-col items-center">
       <svg height={radius * 2} width={radius * 2}>
         <circle
-          stroke="rgba(255,255,255,0.1)"
+          stroke="var(--ring-bg)"
           fill="transparent"
           strokeWidth={stroke}
           r={normalized}
