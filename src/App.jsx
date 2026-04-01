@@ -1,33 +1,47 @@
 import { useState, useEffect } from "react";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Loader from "../components/Loader";
 import "./App.css";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
     //  Theme setup
     const savedTheme = localStorage.getItem("theme") || "dark";
     document.documentElement.classList.add(savedTheme);
 
-    //  Auth check
-    const token = localStorage.getItem("token");
+    // OPTIONAL: verify token (real auth)
+    const verifyUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
 
-    // Pages where user should NOT be redirected
-    const publicRoutes = ["/signin", "/signup"];
+      try {
+        const res = await fetch(
+          "https://connectusonfitness.onrender.com/api/v1/profile",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
 
-    if (token && publicRoutes.includes(location.pathname)) {
-      navigate("/dashboard");
-    }
+        // If token invalid → logout
+        if (!res.ok) {
+          localStorage.removeItem("token");
+        }
+      } catch {
+        localStorage.removeItem("token");
+      }
+    };
 
-    // Loader timing
-    const timer = setTimeout(() => setLoading(false), 1500);
+    verifyUser();
+
+    //  Loader timing
+    const timer = setTimeout(() => setLoading(false), 1200);
     return () => clearTimeout(timer);
-  }, [location.pathname, navigate]);
+  }, []);
 
   if (loading) return <Loader />;
 
