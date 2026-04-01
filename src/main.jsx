@@ -9,6 +9,7 @@ import Signup from "../pages/SignUpPage.jsx";
 import Profile from "../components/Profile.jsx";
 import FoodDiary from "../components/FoodDiary.jsx";
 import { FoodProvider } from "../context/FoodContext.jsx";
+import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 const savedTheme = localStorage.getItem("theme");
 
 if (savedTheme === "dark") {
@@ -37,14 +38,28 @@ const router = createBrowserRouter([
         path: "/signup",
         element: <Signup />,
       },
+
+      // Protected
       {
         path: "/profile",
-        element: <Profile />,
+        element: (
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        ),
       },
-      { path: "/food", element: <FoodDiary /> },
+      {
+        path: "/food",
+        element: (
+          <ProtectedRoute>
+            <FoodDiary />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
 ]);
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <FoodProvider>
