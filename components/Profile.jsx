@@ -27,7 +27,7 @@ export default function Profile() {
     protein: 140,
     water: 3000,
   });
-
+  const baseURL = import.meta.env.VITE_BASE_URL;
   const { foods, water, setFoods, setWater } = useFood();
 
   // Fetch all profile data from backend
@@ -36,7 +36,7 @@ export default function Profile() {
       try {
         const token = localStorage.getItem("token"); // assuming you store JWT after login
 
-        const res = await fetch("http://localhost:5000/api/v1/profile/full", {
+        const res = await fetch(`${baseURL}/profile/full`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
