@@ -27,22 +27,20 @@ export default function Navbar() {
         >
           Home
         </Link>
-
         <Link
           to="/programs"
           className="px-3 py-2 rounded-lg text-[var(--text-sub)] hover:text-[var(--primary)] hover:bg-white/10 transition-all duration-200"
         >
           Programs
         </Link>
-
+        //remove pricing
         <Link
           to="/pricing"
           className="px-3 py-2 rounded-lg text-[var(--text-sub)] hover:text-[var(--primary)] hover:bg-white/10 transition-all duration-200"
         >
           Pricing
         </Link>
-
-        <Link
+        <Link //take care of this
           to="/contact"
           className="px-3 py-2 rounded-lg text-[var(--text-sub)] hover:text-[var(--primary)] hover:bg-white/10 transition-all duration-200"
         >
