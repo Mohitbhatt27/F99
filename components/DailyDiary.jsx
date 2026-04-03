@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { api } from "../api/api";
 import DiaryChart from "./DiaryChart";
 import DiaryHeatmap from "./DiaryHeatmap";
 
 export default function DailyDiary({ entries, setEntries }) {
   const [message, setMessage] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const [entry, setEntry] = useState({
     mood: "😐",
@@ -11,22 +13,11 @@ export default function DailyDiary({ entries, setEntries }) {
     note: "",
   });
 
-  /* Load from localStorage */
-  useEffect(() => {
-    const saved = localStorage.getItem("diary");
-    if (saved) setEntries(JSON.parse(saved));
-  }, []);
-
-  /* Save to localStorage */
-  useEffect(() => {
-    localStorage.setItem("diary", JSON.stringify(entries));
-  }, [entries]);
-
   function handleChange(e) {
     setEntry({ ...entry, [e.target.name]: e.target.value });
   }
 
-  function saveEntry() {
+  async function saveEntry() {
     const today = new Date().toLocaleDateString();
 
     if (!entry.note.trim()) {
@@ -39,21 +30,29 @@ export default function DailyDiary({ entries, setEntries }) {
       return;
     }
 
-    const newEntry = { ...entry, date: today };
+    setSaving(true);
+    try {
+      // POST to backend — backend attaches userId from JWT
+      const data = await api.post("/nutrition/diary", {
+        mood: entry.mood,
+        rating: Number(entry.rating),
+        note: entry.note,
+        date: today,
+      });
 
-    setEntries([newEntry, ...entries]);
-
-    setEntry({
-      mood: "😐",
-      rating: 5,
-      note: "",
-    });
-
-    setMessage("Entry saved.");
+      // Use the entry returned by the server so _id is present
+      const saved = data.entry ?? { ...entry, date: today };
+      setEntries([saved, ...entries]);
+      setEntry({ mood: "😐", rating: 5, note: "" });
+      setMessage("Entry saved.");
+    } catch (err) {
+      setMessage(err.message || "Failed to save entry.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   /* Analytics */
-
   const avgRating =
     entries.length > 0
       ? (
@@ -68,17 +67,13 @@ export default function DailyDiary({ entries, setEntries }) {
 
   function calculateStreak() {
     if (!entries.length) return 0;
-
     const sorted = [...entries].sort(
       (a, b) => new Date(b.date) - new Date(a.date),
     );
-
     let streak = 0;
     let current = new Date();
-
     for (let i = 0; i < sorted.length; i++) {
       const d = new Date(sorted[i].date);
-
       if (d.toDateString() === current.toDateString()) {
         streak++;
         current.setDate(current.getDate() - 1);
@@ -86,28 +81,21 @@ export default function DailyDiary({ entries, setEntries }) {
         break;
       }
     }
-
     return streak;
   }
 
   const streak = calculateStreak();
 
-  /* Insight */
   let insight = "Stay consistent.";
-
-  if (entries.length < 3) {
-    insight = "Start building your streak.";
-  } else if (avgRating >= 8) {
-    insight = "You're performing at a high level.";
-  } else if (avgRating >= 6) {
+  if (entries.length < 3) insight = "Start building your streak.";
+  else if (avgRating >= 8) insight = "You're performing at a high level.";
+  else if (avgRating >= 6)
     insight = "Solid consistency, push intensity slightly.";
-  } else if (avgRating !== "—") {
+  else if (avgRating !== "—")
     insight = "Your training quality is low — fix effort or recovery.";
-  }
 
   return (
     <div className="mt-14">
-      {/* Title */}
       <h2 className="text-xl font-semibold mb-6">Daily Fitness Diary</h2>
 
       {/* Dashboard */}
@@ -166,9 +154,10 @@ export default function DailyDiary({ entries, setEntries }) {
 
         <button
           onClick={saveEntry}
-          className="bg-[var(--primary)] text-black px-6 py-2 rounded-lg font-semibold hover:scale-105 transition"
+          disabled={saving}
+          className="bg-[var(--primary)] text-black px-6 py-2 rounded-lg font-semibold hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Save Entry
+          {saving ? "Saving..." : "Save Entry"}
         </button>
 
         {message && <p className="text-sm text-[var(--text-sub)]">{message}</p>}
@@ -178,11 +167,11 @@ export default function DailyDiary({ entries, setEntries }) {
       <DiaryChart entries={entries} />
       <DiaryHeatmap entries={entries} />
 
-      {/* Entries */}
+      {/* Entries list */}
       <div className="mt-8 space-y-4">
         {entries.map((e, i) => (
           <div
-            key={i}
+            key={e._id ?? i}
             className="bg-[var(--card)] p-5 rounded-xl border border-[var(--text-sub)]/20 hover:border-[var(--primary)]/40 transition"
           >
             <div className="flex justify-between text-sm text-[var(--text-sub)] mb-2">
@@ -191,7 +180,6 @@ export default function DailyDiary({ entries, setEntries }) {
                 {e.mood} • {e.rating}/10
               </span>
             </div>
-
             <p>{e.note}</p>
           </div>
         ))}
@@ -205,7 +193,6 @@ export default function DailyDiary({ entries, setEntries }) {
   );
 }
 
-/* Card */
 function Card({ label, value }) {
   return (
     <div className="bg-[var(--card)] p-4 rounded-lg border border-[var(--text-sub)]/20 text-center">
