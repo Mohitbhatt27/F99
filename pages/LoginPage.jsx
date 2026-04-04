@@ -8,7 +8,7 @@ function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
   // Redirect if already logged in
   useEffect(() => {
     if (localStorage.getItem("token")) navigate("/profile");
@@ -31,10 +31,22 @@ function Login() {
     setError("");
 
     try {
-      const data = await api.post("/auth/signin", {
-        email: form.email,
-        password: form.password,
+      const response = await fetch(`${BASE_URL}/auth/signin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password,
+        }),
       });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed. Please try again.");
+      }
 
       localStorage.setItem("token", data.token);
       navigate("/profile");

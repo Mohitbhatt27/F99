@@ -15,7 +15,7 @@ function Signup() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
   // Redirect if already logged in
   useEffect(() => {
     if (localStorage.getItem("token")) navigate("/profile");
@@ -53,15 +53,23 @@ function Signup() {
 
     setLoading(true);
     try {
-      const data = await api.post("/auth/signup", {
-        name: form.name,
-        email: form.email,
-        password: form.password,
-        gender: form.gender.toLowerCase(),
-        age: Number(form.age),
+      const data = await fetch(`${BASE_URL}/auth/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          password: form.password,
+          gender: form.gender.toLowerCase(),
+          age: Number(form.age),
+        }),
       });
 
-      localStorage.setItem("token", data.token);
+      const result = await data.json();
+      console.log("data is", result);
+      localStorage.setItem("token", result.token);
       navigate("/profile");
     } catch (err) {
       setError(err.message || "Signup failed. Please try again.");
