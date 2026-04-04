@@ -10,6 +10,8 @@ import Profile from "../components/Profile.jsx";
 import FoodDiary from "../components/FoodDiary.jsx";
 import { FoodProvider } from "../context/FoodContext.jsx";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
+import ForgotPassword from "../pages/ForgotPassword";
+import ResetPassword from "../pages/ResetPassword";
 const savedTheme = localStorage.getItem("theme");
 
 if (savedTheme === "dark") {
@@ -55,6 +57,14 @@ const router = createBrowserRouter([
             <FoodDiary />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "/forgot-password",
+        element: <ForgotPassword />,
+      },
+      {
+        path: "/reset-password",
+        element: <ResetPassword />,
       },
     ],
   },

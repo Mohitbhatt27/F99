@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Loader from "../components/Loader";
 import "./App.css";
-
+import { api } from "../utils/api";
 export default function App() {
   const [loading, setLoading] = useState(true);
 
@@ -16,21 +16,8 @@ export default function App() {
     const verifyUser = async () => {
       const token = localStorage.getItem("token");
       if (!token) return;
-
       try {
-        const res = await fetch(
-          "https://connectusonfitness.onrender.com/api/v1/profile",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-
-        // If token invalid → logout
-        if (!res.ok) {
-          localStorage.removeItem("token");
-        }
+        await api.get("/profile");
       } catch {
         localStorage.removeItem("token");
       }
