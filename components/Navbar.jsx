@@ -65,12 +65,20 @@ export default function Navbar() {
           Contact
         </Link>
         {isLoggedIn && (
-          <Link
-            to="/profile"
-            className="px-3 py-2 rounded-lg text-[var(--text-sub)] hover:text-[var(--primary)] hover:bg-white/10 transition-all duration-200"
-          >
-            Profile
-          </Link>
+          <>
+            <Link
+              to="/profile"
+              className="px-3 py-2 rounded-lg text-[var(--text-sub)] hover:text-[var(--primary)] hover:bg-white/10 transition-all duration-200"
+            >
+              Profile
+            </Link>
+            <Link
+              to="/progress-photos"
+              className="px-3 py-2 rounded-lg text-[var(--text-sub)] hover:text-[var(--primary)] hover:bg-white/10 transition-all duration-200"
+            >
+              Progress
+            </Link>
+          </>
         )}
       </div>
 

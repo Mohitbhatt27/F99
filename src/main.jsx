@@ -11,6 +11,7 @@ import FoodDiary from "../components/FoodDiary.jsx";
 import { FoodProvider } from "../context/FoodContext.jsx";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import ForgotPassword from "../pages/ForgotPassword";
+import ProgressPhotos from "../pages/ProgressPhotos";
 import ResetPassword from "../pages/ResetPassword";
 const savedTheme = localStorage.getItem("theme");
 
@@ -28,6 +29,14 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
+      {
+        path: "/progress-photos",
+        element: (
+          <ProtectedRoute>
+            <ProgressPhotos />
+          </ProtectedRoute>
+        ),
+      },
       {
         path: "/",
         element: <LandingPage />,
