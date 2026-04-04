@@ -1,4 +1,4 @@
-const BASE_URL = "https://connectusonfitness.onrender.com/api";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 async function apiRequest(endpoint, method = "GET", body = null) {
   const token = localStorage.getItem("token");
