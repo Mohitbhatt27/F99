@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { api } from "../utils/api";
+import { api } from "../src/utils/api";
 
 export default function ProgressPhotos() {
   const [photos, setPhotos] = useState([]);

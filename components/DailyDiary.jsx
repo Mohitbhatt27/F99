@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { api } from "../api/api";
+import { api } from "../src/utils/api";
 import DiaryChart from "./DiaryChart";
 import DiaryHeatmap from "./DiaryHeatmap";
 

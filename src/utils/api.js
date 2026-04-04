@@ -1,6 +1,6 @@
 const BASE_URL = "https://connectusonfitness.onrender.com/api";
 
-export async function apiRequest(endpoint, method = "GET", body = null) {
+async function apiRequest(endpoint, method = "GET", body = null) {
   const token = localStorage.getItem("token");
 
   const res = await fetch(`${BASE_URL}${endpoint}`, {
@@ -20,3 +20,10 @@ export async function apiRequest(endpoint, method = "GET", body = null) {
 
   return data.data;
 }
+
+export const api = {
+  get: (endpoint) => apiRequest(endpoint, "GET"),
+  post: (endpoint, body) => apiRequest(endpoint, "POST", body),
+  put: (endpoint, body) => apiRequest(endpoint, "PUT", body),
+  delete: (endpoint) => apiRequest(endpoint, "DELETE"),
+};

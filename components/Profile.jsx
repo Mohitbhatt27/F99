@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../api/api";
+import { api } from "../src/utils/api";
 import DailyDiary from "./DailyDiary";
 import ProgressRings from "./ProgressRings";
 import InsightsPanel from "./InsightsPanel";
