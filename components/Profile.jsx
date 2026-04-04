@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api/api";
 import DailyDiary from "./DailyDiary";
@@ -11,6 +11,9 @@ export default function Profile() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [avatarError, setAvatarError] = useState("");
+  const avatarInputRef = useRef();
 
   const [userData, setUserData] = useState(null);
   const [todayFood, setTodayFood] = useState({
@@ -31,15 +34,12 @@ export default function Profile() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      // Guard: redirect to login if no token at all
       if (!localStorage.getItem("token")) {
         navigate("/login");
         return;
       }
-
       try {
         const data = await api.get("/profile/full");
-
         setUserData(data.user);
         setTodayFood(data.todayFood);
         setDiaryEntries(data.diaryEntries ?? []);
@@ -48,8 +48,6 @@ export default function Profile() {
         setTargets(
           data.targets ?? { calories: 2300, protein: 140, water: 3000 },
         );
-
-        // Sync FoodContext so FoodDiary renders the already-logged items
         setFoods(data.todayFood?.foods ?? []);
         setWater(data.todayFood?.water ?? 0);
       } catch (err) {
@@ -58,9 +56,46 @@ export default function Profile() {
         setLoading(false);
       }
     };
-
     fetchProfile();
   }, [navigate, setFoods, setWater]);
+
+  async function handleAvatarChange(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setAvatarError("Please select an image file.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setAvatarError("Image must be under 5MB.");
+      return;
+    }
+
+    setUploadingAvatar(true);
+    setAvatarError("");
+    try {
+      const token = localStorage.getItem("token");
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const res = await fetch(
+        `${import.meta.env.VITE_BASE_URL ?? "http://localhost:5000"}/api/v1/upload/profile-image`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        },
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Upload failed.");
+      setUserData((prev) => ({ ...prev, avatar: data.url }));
+    } catch (err) {
+      setAvatarError(err.message || "Failed to upload photo.");
+    } finally {
+      setUploadingAvatar(false);
+      if (avatarInputRef.current) avatarInputRef.current.value = "";
+    }
+  }
 
   if (loading) {
     return (
@@ -108,13 +143,37 @@ export default function Profile() {
       <div className="p-6 rounded-2xl bg-gradient-to-r from-[var(--primary)]/20 to-transparent border border-[var(--text-sub)]/20 shadow-lg">
         <div className="flex justify-between items-center flex-wrap gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[var(--primary)] shadow-lg">
-              <img
-                src={userData?.avatar || "https://i.pravatar.cc/150?img=3"}
-                alt="profile"
-                className="w-full h-full object-cover"
+            {/* Avatar with upload on hover */}
+            <div
+              className="relative group cursor-pointer"
+              onClick={() => avatarInputRef.current?.click()}
+            >
+              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[var(--primary)] shadow-lg">
+                {uploadingAvatar ? (
+                  <div className="w-full h-full flex items-center justify-center bg-[var(--card)]">
+                    <div className="w-5 h-5 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin" />
+                  </div>
+                ) : (
+                  <img
+                    src={userData?.avatar || "https://i.pravatar.cc/150?img=3"}
+                    alt="profile"
+                    className="w-full h-full object-cover"
+                  />
+                )}
+              </div>
+              {/* Camera overlay */}
+              <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <span className="text-white text-lg">📷</span>
+              </div>
+              <input
+                ref={avatarInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarChange}
+                className="hidden"
               />
             </div>
+
             <div>
               <h1 className="text-3xl font-bold">
                 Hello, {userData?.name || "Athlete"} 👋
@@ -122,15 +181,29 @@ export default function Profile() {
               <p className="text-[var(--text-sub)]">
                 You're building something elite.
               </p>
+              {avatarError && (
+                <p className="text-red-500 text-xs mt-1">{avatarError}</p>
+              )}
+              <p className="text-[var(--text-sub)] text-xs mt-0.5">
+                Hover avatar to change photo
+              </p>
             </div>
           </div>
 
-          <button
-            onClick={() => navigate("/food")}
-            className="px-5 py-2 bg-[var(--primary)] text-black rounded-lg font-semibold hover:scale-105 transition shadow-md"
-          >
-            Food Diary
-          </button>
+          <div className="flex gap-3 flex-wrap">
+            <button
+              onClick={() => navigate("/progress-photos")}
+              className="px-5 py-2 bg-[var(--card)] border border-[var(--text-sub)]/20 rounded-lg font-semibold hover:scale-105 transition shadow-md"
+            >
+              Progress Photos
+            </button>
+            <button
+              onClick={() => navigate("/food")}
+              className="px-5 py-2 bg-[var(--primary)] text-black rounded-lg font-semibold hover:scale-105 transition shadow-md"
+            >
+              Food Diary
+            </button>
+          </div>
         </div>
       </div>
 

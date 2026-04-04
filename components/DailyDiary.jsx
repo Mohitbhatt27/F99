@@ -3,15 +3,16 @@ import { api } from "../api/api";
 import DiaryChart from "./DiaryChart";
 import DiaryHeatmap from "./DiaryHeatmap";
 
+const PAGE_SIZE = 10;
+
 export default function DailyDiary({ entries, setEntries }) {
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(entries.length === PAGE_SIZE);
 
-  const [entry, setEntry] = useState({
-    mood: "😐",
-    rating: 5,
-    note: "",
-  });
+  const [entry, setEntry] = useState({ mood: "😐", rating: 5, note: "" });
 
   function handleChange(e) {
     setEntry({ ...entry, [e.target.name]: e.target.value });
@@ -19,12 +20,10 @@ export default function DailyDiary({ entries, setEntries }) {
 
   async function saveEntry() {
     const today = new Date().toLocaleDateString();
-
     if (!entry.note.trim()) {
       setMessage("Write something first.");
       return;
     }
-
     if (entries.find((e) => e.date === today)) {
       setMessage("Already logged today.");
       return;
@@ -32,15 +31,12 @@ export default function DailyDiary({ entries, setEntries }) {
 
     setSaving(true);
     try {
-      // POST to backend — backend attaches userId from JWT
       const data = await api.post("/nutrition/diary", {
         mood: entry.mood,
         rating: Number(entry.rating),
         note: entry.note,
         date: today,
       });
-
-      // Use the entry returned by the server so _id is present
       const saved = data.entry ?? { ...entry, date: today };
       setEntries([saved, ...entries]);
       setEntry({ mood: "😐", rating: 5, note: "" });
@@ -49,6 +45,23 @@ export default function DailyDiary({ entries, setEntries }) {
       setMessage(err.message || "Failed to save entry.");
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function loadMore() {
+    setLoadingMore(true);
+    try {
+      const nextPage = page + 1;
+      const data = await api.get(
+        `/nutrition/diary?page=${nextPage}&limit=${PAGE_SIZE}`,
+      );
+      setEntries([...entries, ...(data.entries ?? [])]);
+      setPage(nextPage);
+      setHasMore(data.hasMore ?? false);
+    } catch (err) {
+      setMessage("Failed to load more entries.");
+    } finally {
+      setLoadingMore(false);
     }
   }
 
@@ -77,9 +90,7 @@ export default function DailyDiary({ entries, setEntries }) {
       if (d.toDateString() === current.toDateString()) {
         streak++;
         current.setDate(current.getDate() - 1);
-      } else {
-        break;
-      }
+      } else break;
     }
     return streak;
   }
@@ -124,7 +135,6 @@ export default function DailyDiary({ entries, setEntries }) {
               <option>😡</option>
             </select>
           </div>
-
           <div>
             <label className="text-sm text-[var(--text-sub)]">
               Workout Rating
@@ -184,6 +194,19 @@ export default function DailyDiary({ entries, setEntries }) {
           </div>
         ))}
       </div>
+
+      {/* Load More */}
+      {hasMore && (
+        <div className="mt-6 text-center">
+          <button
+            onClick={loadMore}
+            disabled={loadingMore}
+            className="px-6 py-2 rounded-lg border border-[var(--text-sub)]/20 text-sm hover:border-[var(--primary)]/40 hover:bg-[var(--primary)]/5 transition disabled:opacity-50"
+          >
+            {loadingMore ? "Loading..." : "Load More"}
+          </button>
+        </div>
+      )}
 
       {/* Insight */}
       <div className="mt-6 text-sm text-[var(--text-sub)]">
