@@ -18,7 +18,27 @@ async function apiRequest(endpoint, method = "GET", body = null) {
     throw new Error(data.message || "Something went wrong");
   }
 
-  return data.data;
+  return data;
+}
+
+// Separate method for file uploads — does NOT set Content-Type
+// so the browser sets multipart/form-data boundary automatically
+async function apiUpload(endpoint, formData) {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${BASE_URL}${endpoint}`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: formData,
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "Upload failed");
+  }
+
+  return data;
 }
 
 export const api = {
@@ -26,4 +46,5 @@ export const api = {
   post: (endpoint, body) => apiRequest(endpoint, "POST", body),
   put: (endpoint, body) => apiRequest(endpoint, "PUT", body),
   delete: (endpoint) => apiRequest(endpoint, "DELETE"),
+  upload: (endpoint, formData) => apiUpload(endpoint, formData),
 };

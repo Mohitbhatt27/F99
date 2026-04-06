@@ -70,17 +70,8 @@ export default function ProgressPhotos() {
 
       // Must use raw fetch here — api.js sets Content-Type: application/json
       // which breaks multipart/form-data uploads
-      const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL ?? "http://localhost:5000"}/api/v1/progress-photo/photo`,
-        {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-          body: formData,
-        },
-      );
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Upload failed.");
+      const data = await api.upload("/progress-photo/photo", formData);
 
       setPhotos([data.photo, ...photos]);
       setSuccess("Photo uploaded successfully!");

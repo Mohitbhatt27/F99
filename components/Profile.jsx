@@ -39,6 +39,7 @@ export default function Profile() {
         return;
       }
       try {
+        // ── FIXED: was accidentally calling api.upload — should be api.get ──
         const data = await api.get("/profile/full");
         setUserData(data.user);
         setTodayFood(data.todayFood);
@@ -59,9 +60,11 @@ export default function Profile() {
     fetchProfile();
   }, [navigate, setFoods, setWater]);
 
+  // ── Avatar upload ──
   async function handleAvatarChange(e) {
     const file = e.target.files[0];
     if (!file) return;
+
     if (!file.type.startsWith("image/")) {
       setAvatarError("Please select an image file.");
       return;
@@ -73,21 +76,13 @@ export default function Profile() {
 
     setUploadingAvatar(true);
     setAvatarError("");
+
     try {
-      const token = localStorage.getItem("token");
       const formData = new FormData();
       formData.append("image", file);
 
-      const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL ?? "http://localhost:5000"}/api/v1/upload/profile-image`,
-        {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-          body: formData,
-        },
-      );
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Upload failed.");
+      // ── Uses api.upload — does NOT set Content-Type so multer works ──
+      const data = await api.upload("/api/v1/upload/profile-image", formData);
       setUserData((prev) => ({ ...prev, avatar: data.url }));
     } catch (err) {
       setAvatarError(err.message || "Failed to upload photo.");
@@ -161,7 +156,6 @@ export default function Profile() {
                   />
                 )}
               </div>
-              {/* Camera overlay */}
               <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <span className="text-white text-lg">📷</span>
               </div>
