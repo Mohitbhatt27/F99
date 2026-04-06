@@ -82,7 +82,7 @@ export default function Profile() {
       formData.append("image", file);
 
       // ── Uses api.upload — does NOT set Content-Type so multer works ──
-      const data = await api.upload("/api/v1/upload/profile-image", formData);
+      const data = await api.upload("/upload/profile-image", formData);
       setUserData((prev) => ({ ...prev, avatar: data.url }));
     } catch (err) {
       setAvatarError(err.message || "Failed to upload photo.");
