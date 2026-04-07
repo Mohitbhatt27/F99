@@ -14,8 +14,51 @@ export default function DailyDiary({ entries, setEntries }) {
 
   const [entry, setEntry] = useState({ mood: "😐", rating: 5, note: "" });
 
+  const [editingId, setEditingId] = useState(null);
+  const [editForm, setEditForm] = useState({ mood: "😐", rating: 5, note: "" });
+  const [editSaving, setEditSaving] = useState(false);
+
   function handleChange(e) {
     setEntry({ ...entry, [e.target.name]: e.target.value });
+  }
+
+  function handleEditChange(e) {
+    setEditForm({ ...editForm, [e.target.name]: e.target.value });
+  }
+
+  function startEdit(e) {
+    setEditingId(e._id);
+    setEditForm({ mood: e.mood, rating: e.rating, note: e.note });
+    setMessage("");
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setEditForm({ mood: "😐", rating: 5, note: "" });
+  }
+
+  async function saveEdit(entryId) {
+    if (!editForm.note.trim()) {
+      setMessage("Note cannot be empty.");
+      return;
+    }
+    setEditSaving(true);
+    try {
+      const data = await api.patch(`/nutrition/diary/${entryId}`, {
+        mood: editForm.mood,
+        rating: Number(editForm.rating),
+        note: editForm.note,
+      });
+      const updated = data.entry;
+      // ── Update entries so chart re-renders immediately ──
+      setEntries(entries.map((e) => (e._id === entryId ? updated : e)));
+      setEditingId(null);
+      setMessage("Entry updated.");
+    } catch (err) {
+      setMessage(err.message || "Failed to update entry.");
+    } finally {
+      setEditSaving(false);
+    }
   }
 
   async function saveEntry() {
@@ -65,14 +108,13 @@ export default function DailyDiary({ entries, setEntries }) {
     }
   }
 
-  /* Analytics */
+  /* Analytics — recomputed from entries so chart updates immediately after edit */
   const avgRating =
     entries.length > 0
       ? (
           entries.reduce((a, e) => a + Number(e.rating), 0) / entries.length
         ).toFixed(1)
       : "—";
-
   const consistency =
     entries.length > 0
       ? Math.min(100, Math.round((entries.length / 30) * 100))
@@ -117,7 +159,7 @@ export default function DailyDiary({ entries, setEntries }) {
         <Card label="Consistency" value={`${consistency}%`} />
       </div>
 
-      {/* Input */}
+      {/* New Entry Input */}
       <div className="bg-[var(--card)] p-6 rounded-xl border border-[var(--text-sub)]/20 space-y-4">
         <div className="grid md:grid-cols-2 gap-4">
           <div>
@@ -150,7 +192,6 @@ export default function DailyDiary({ entries, setEntries }) {
             />
           </div>
         </div>
-
         <div>
           <label className="text-sm text-[var(--text-sub)]">Diary</label>
           <textarea
@@ -161,7 +202,6 @@ export default function DailyDiary({ entries, setEntries }) {
             className="w-full mt-1 px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--text-sub)]/20 h-24 resize-none"
           />
         </div>
-
         <button
           onClick={saveEntry}
           disabled={saving}
@@ -169,28 +209,111 @@ export default function DailyDiary({ entries, setEntries }) {
         >
           {saving ? "Saving..." : "Save Entry"}
         </button>
-
         {message && <p className="text-sm text-[var(--text-sub)]">{message}</p>}
       </div>
 
-      {/* Charts */}
-      <DiaryChart entries={entries} />
+      {/* Charts — key forces remount when entries change so line updates */}
+      <DiaryChart
+        entries={entries}
+        key={JSON.stringify(entries.map((e) => e.rating))}
+      />
       <DiaryHeatmap entries={entries} />
 
       {/* Entries list */}
       <div className="mt-8 space-y-4">
-        {entries.map((e, i) => (
+        {entries.map((e) => (
           <div
-            key={e._id ?? i}
-            className="bg-[var(--card)] p-5 rounded-xl border border-[var(--text-sub)]/20 hover:border-[var(--primary)]/40 transition"
+            key={e._id}
+            className="bg-[var(--card)] rounded-xl border border-[var(--text-sub)]/20 hover:border-[var(--primary)]/40 transition overflow-hidden"
           >
-            <div className="flex justify-between text-sm text-[var(--text-sub)] mb-2">
-              <span>{e.date}</span>
-              <span>
-                {e.mood} • {e.rating}/10
-              </span>
-            </div>
-            <p>{e.note}</p>
+            {editingId === e._id ? (
+              /* ── Edit mode ── */
+              <div className="p-5 space-y-3 border-l-4 border-[var(--primary)]">
+                <p className="text-xs font-semibold text-[var(--primary)] uppercase tracking-wide">
+                  Editing — {e.date}
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs text-[var(--text-sub)]">
+                      Mood
+                    </label>
+                    <select
+                      name="mood"
+                      value={editForm.mood}
+                      onChange={handleEditChange}
+                      className="w-full mt-1 px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--text-sub)]/20 text-sm"
+                    >
+                      <option>😃</option>
+                      <option>🙂</option>
+                      <option>😐</option>
+                      <option>😴</option>
+                      <option>😡</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs text-[var(--text-sub)]">
+                      Rating (1–10)
+                    </label>
+                    <input
+                      type="number"
+                      name="rating"
+                      min="1"
+                      max="10"
+                      value={editForm.rating}
+                      onChange={handleEditChange}
+                      className="w-full mt-1 px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--text-sub)]/20 text-sm"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs text-[var(--text-sub)]">Note</label>
+                  <textarea
+                    name="note"
+                    value={editForm.note}
+                    onChange={handleEditChange}
+                    className="w-full mt-1 px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--text-sub)]/20 text-sm h-24 resize-none"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => saveEdit(e._id)}
+                    disabled={editSaving}
+                    className="bg-[var(--primary)] text-black px-5 py-2 rounded-lg text-sm font-semibold hover:scale-105 transition disabled:opacity-50"
+                  >
+                    {editSaving ? "Saving..." : "Save Changes"}
+                  </button>
+                  <button
+                    onClick={cancelEdit}
+                    className="border border-[var(--text-sub)]/20 px-5 py-2 rounded-lg text-sm hover:bg-[var(--bg)] transition"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* ── View mode ── */
+              <>
+                {/* Header bar with Edit button — full width, easy to find */}
+                <div className="flex justify-between items-center px-5 py-3 border-b border-[var(--text-sub)]/10 bg-[var(--bg)]/40">
+                  <div className="flex items-center gap-3 text-sm text-[var(--text-sub)]">
+                    <span className="font-medium text-[var(--text-main)]">
+                      {e.date}
+                    </span>
+                    <span>{e.mood}</span>
+                    <span className="px-2 py-0.5 rounded-full bg-[var(--primary)]/10 text-[var(--primary)] text-xs font-semibold">
+                      {e.rating}/10
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => startEdit(e)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[var(--primary)]/30 text-[var(--primary)] text-xs font-semibold hover:bg-[var(--primary)]/10 transition"
+                  >
+                    ✏️ Edit
+                  </button>
+                </div>
+                <p className="px-5 py-4 text-sm leading-relaxed">{e.note}</p>
+              </>
+            )}
           </div>
         ))}
       </div>
@@ -208,7 +331,6 @@ export default function DailyDiary({ entries, setEntries }) {
         </div>
       )}
 
-      {/* Insight */}
       <div className="mt-6 text-sm text-[var(--text-sub)]">
         Insight: <span className="text-[var(--text-main)]">{insight}</span>
       </div>

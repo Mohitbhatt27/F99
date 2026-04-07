@@ -38,17 +38,15 @@ export default function EditProfile() {
     const fetchProfile = async () => {
       try {
         const data = await api.get("/profile/full");
-        const p = data.user;
-        const prof = data.profile ?? {};
 
         setForm({
           age: data.user?.age ?? "",
-          gender: prof.gender ?? data.user?.gender ?? "",
-          weight: prof.weight ?? "",
-          height: prof.height ?? "",
-          bodyFat: prof.bodyFat ?? "",
-          trainingExperience: prof.trainingExperience ?? "",
-          aim: prof.aim ?? "",
+          gender: data.user?.gender ?? "",
+          weight: data.user?.weight ?? "",
+          height: data.user?.height ?? "",
+          bodyFat: data.user?.bodyFat ?? "",
+          trainingExperience: data.user?.trainingExperience ?? "",
+          aim: data.user?.aim ?? "",
           targets: {
             calories: data.targets?.calories ?? 2300,
             protein: data.targets?.protein ?? 140,
