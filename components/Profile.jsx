@@ -7,6 +7,19 @@ import InsightsPanel from "./InsightsPanel";
 import StreakCard from "./StreakCard";
 import { useFood } from "../context/FoodContext";
 
+// Normalize goals: coalesce id/_id and compute progress
+function normalizeGoal(g) {
+  const _id = g._id ?? g.id;
+  const progress = Math.min(
+    100,
+    Math.round(((g.current ?? 0) / (g.target || 1)) * 100),
+  );
+  return { ...g, _id, progress };
+}
+function normalizeGoals(goals) {
+  return (goals ?? []).map(normalizeGoal);
+}
+
 export default function Profile() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -61,7 +74,7 @@ export default function Profile() {
         setUserData(data.user);
         setTodayFood(data.todayFood);
         setDiaryEntries(data.diaryEntries ?? []);
-        setGoals(data.goals ?? []);
+        setGoals(normalizeGoals(data.goals)); // ← normalized
         setStreak(data.streak ?? 0);
         setTargets(
           data.targets ?? { calories: 2300, protein: 140, water: 3000 },
@@ -123,7 +136,7 @@ export default function Profile() {
         target: Number(newGoal.target),
         unit: newGoal.unit.trim(),
       });
-      setGoals([data.goal, ...goals]);
+      setGoals([normalizeGoal(data.goal), ...goals]); // ← normalized
       setNewGoal({ title: "", current: "", target: "", unit: "" });
       setShowAddGoal(false);
     } catch (err) {
@@ -156,19 +169,8 @@ export default function Profile() {
         target: Number(editGoalForm.target),
         unit: editGoalForm.unit.trim(),
       });
-      setGoals(
-        goals.map((g) =>
-          g._id === id
-            ? {
-                ...data.goal,
-                progress: Math.min(
-                  100,
-                  Math.round((data.goal.current / data.goal.target) * 100),
-                ),
-              }
-            : g,
-        ),
-      );
+      const updated = normalizeGoal(data.goal); // ← normalized
+      setGoals(goals.map((g) => (g._id === id ? updated : g)));
       setEditingGoalId(null);
     } catch (err) {
       setGoalMessage(err.message || "Failed to update goal.");
@@ -176,6 +178,10 @@ export default function Profile() {
   }
 
   async function handleDeleteGoal(id) {
+    if (!id || id === "undefined") {
+      setGoalMessage("Invalid goal ID — please refresh and try again.");
+      return;
+    }
     if (!window.confirm("Delete this goal?")) return;
     try {
       await api.delete(`/goals/${id}`);
@@ -324,7 +330,7 @@ export default function Profile() {
         />
       </div>
 
-      {/* GOALS — fully user-defined */}
+      {/* GOALS */}
       <div>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Current Goals</h2>
