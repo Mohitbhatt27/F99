@@ -37,7 +37,7 @@ export default function EditProfile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const data = await api.get("/api/v1/profile/full");
+        const data = await api.get("/profile/full");
         const p = data.user;
         const prof = data.profile ?? {};
 
@@ -86,7 +86,7 @@ export default function EditProfile() {
     setSuccess("");
 
     try {
-      await api.patch("/api/v1/profile", {
+      await api.patch("/profile", {
         ...(form.age && { age: Number(form.age) }),
         ...(form.gender && { gender: form.gender }),
         ...(form.weight && { weight: Number(form.weight) }),

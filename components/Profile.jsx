@@ -39,7 +39,7 @@ export default function Profile() {
         return;
       }
       try {
-        const data = await api.get("/api/v1/profile/full");
+        const data = await api.get("/profile/full");
         setUserData(data.user);
         setTodayFood(data.todayFood);
         setDiaryEntries(data.diaryEntries ?? []);

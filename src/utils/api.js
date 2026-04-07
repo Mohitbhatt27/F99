@@ -21,8 +21,6 @@ async function apiRequest(endpoint, method = "GET", body = null) {
   return data;
 }
 
-// Separate method for file uploads — does NOT set Content-Type
-// so the browser sets multipart/form-data boundary automatically
 async function apiUpload(endpoint, formData) {
   const token = localStorage.getItem("token");
 
@@ -44,6 +42,7 @@ async function apiUpload(endpoint, formData) {
 export const api = {
   get: (endpoint) => apiRequest(endpoint, "GET"),
   post: (endpoint, body) => apiRequest(endpoint, "POST", body),
+  patch: (endpoint, body) => apiRequest(endpoint, "PATCH", body), // ← add this
   put: (endpoint, body) => apiRequest(endpoint, "PUT", body),
   delete: (endpoint) => apiRequest(endpoint, "DELETE"),
   upload: (endpoint, formData) => apiUpload(endpoint, formData),
