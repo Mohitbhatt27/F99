@@ -40,7 +40,7 @@ export default function Navbar() {
         <img
           src={logo}
           alt="Fitness2099"
-          className="h-10 w-10 object-contain hover:scale-110 transition-transform duration-200 ml-10"
+          className="h-10 w-10 object-contain scale-[5] hover:scale-[5.6] transition-transform duration-200 ml-10"
         />
       </div>
 

@@ -13,6 +13,7 @@ import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import ForgotPassword from "../pages/ForgotPassword";
 import ProgressPhotos from "../pages/ProgressPhotos";
 import ResetPassword from "../pages/ResetPassword";
+import EditProfile from "../pages/EditProfile";
 const savedTheme = localStorage.getItem("theme");
 
 if (savedTheme === "dark") {
@@ -56,6 +57,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Profile />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/edit-profile",
+        element: (
+          <ProtectedRoute>
+            <EditProfile />
           </ProtectedRoute>
         ),
       },

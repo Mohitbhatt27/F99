@@ -39,8 +39,7 @@ export default function Profile() {
         return;
       }
       try {
-        // ── FIXED: was accidentally calling api.upload — should be api.get ──
-        const data = await api.get("/profile/full");
+        const data = await api.get("/api/v1/profile/full");
         setUserData(data.user);
         setTodayFood(data.todayFood);
         setDiaryEntries(data.diaryEntries ?? []);
@@ -60,11 +59,9 @@ export default function Profile() {
     fetchProfile();
   }, [navigate, setFoods, setWater]);
 
-  // ── Avatar upload ──
   async function handleAvatarChange(e) {
     const file = e.target.files[0];
     if (!file) return;
-
     if (!file.type.startsWith("image/")) {
       setAvatarError("Please select an image file.");
       return;
@@ -76,13 +73,10 @@ export default function Profile() {
 
     setUploadingAvatar(true);
     setAvatarError("");
-
     try {
       const formData = new FormData();
       formData.append("image", file);
-
-      // ── Uses api.upload — does NOT set Content-Type so multer works ──
-      const data = await api.upload("/upload/profile-image", formData);
+      const data = await api.upload("/api/v1/upload/profile-image", formData);
       setUserData((prev) => ({ ...prev, avatar: data.url }));
     } catch (err) {
       setAvatarError(err.message || "Failed to upload photo.");
@@ -138,7 +132,7 @@ export default function Profile() {
       <div className="p-6 rounded-2xl bg-gradient-to-r from-[var(--primary)]/20 to-transparent border border-[var(--text-sub)]/20 shadow-lg">
         <div className="flex justify-between items-center flex-wrap gap-4">
           <div className="flex items-center gap-4">
-            {/* Avatar with upload on hover */}
+            {/* Avatar */}
             <div
               className="relative group cursor-pointer"
               onClick={() => avatarInputRef.current?.click()}
@@ -186,6 +180,12 @@ export default function Profile() {
 
           <div className="flex gap-3 flex-wrap">
             <button
+              onClick={() => navigate("/edit-profile")}
+              className="px-5 py-2 bg-[var(--card)] border border-[var(--text-sub)]/20 rounded-lg font-semibold hover:scale-105 transition shadow-md"
+            >
+              Edit Profile
+            </button>
+            <button
               onClick={() => navigate("/progress-photos")}
               className="px-5 py-2 bg-[var(--card)] border border-[var(--text-sub)]/20 rounded-lg font-semibold hover:scale-105 transition shadow-md"
             >
@@ -217,13 +217,14 @@ export default function Profile() {
         />
       </div>
 
-      {/* STREAK + INSIGHTS */}
+      {/* STREAK + INSIGHTS — now passes userData for personalised insights */}
       <div className="grid md:grid-cols-2 gap-6">
         <StreakCard streak={streak} />
         <InsightsPanel
           protein={todayFood.totals.protein}
           water={todayFood.water}
           targets={targets}
+          userData={userData}
         />
       </div>
 
