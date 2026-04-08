@@ -120,10 +120,10 @@ function LandingPage() {
         </p>
 
         <Link
-          to={isLoggedIn ? "/workout" : "/signup"}
+          to={isLoggedIn ? "/llogs" : "/signup"}
           className="mt-8 inline-block bg-[var(--success)] text-black px-10 py-3 rounded-xl font-semibold transition hover:scale-105 shadow-lg"
         >
-          {isLoggedIn ? "Open Workout" : "Join Now"}
+          {isLoggedIn ? "Open Logs" : "Join Now"}
         </Link>
       </section>
       {/* Footer */}

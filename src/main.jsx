@@ -17,6 +17,7 @@ import ResetPassword from "../pages/ResetPassword";
 import EditProfile from "../pages/EditProfile";
 import NotFound from "../pages/NotFound";
 import Contact from "../pages/Contact";
+import Logs from "../pages/Logs";
 
 //  FIXED IMPORTS
 import Programs from "../pages/Programs";
@@ -116,6 +117,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Workout />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: "/llogs",
+        element: (
+          <ProtectedRoute>
+            <Logs />
           </ProtectedRoute>
         )
       },

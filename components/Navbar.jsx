@@ -105,6 +105,12 @@ export default function Navbar() {
             >
               Progress
             </Link>
+            <Link
+              to="/llogs"
+              className="px-3 py-2 rounded-lg text-[var(--text-sub)] hover:text-[var(--primary)] hover:bg-white/10 transition-all duration-200"
+            >
+              Logs
+            </Link>
           </>
         )}
       </div>
