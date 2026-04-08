@@ -16,6 +16,8 @@ function Signup() {
   const [loading, setLoading] = useState(false);
 
   const BASE_URL = import.meta.env.VITE_BASE_URL;
+  const fieldClass =
+    "w-full rounded-lg bg-(--bg)/70 border border-(--text-sub)/45 px-4 py-3 text-sm text-(--text-main) placeholder:text-(--text-sub)/85 focus:outline-none focus:border-(--primary) focus:ring-2 focus:ring-(--primary)/40";
 
   // Redirect if already logged in
   useEffect(() => {
@@ -122,70 +124,100 @@ function Signup() {
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <input
-            name="name"
-            type="text"
-            placeholder="Full Name"
-            value={form.name}
-            onChange={handleChange}
-            required
-            className="input"
-          />
+          <label className="block">
+            <span className="mb-2 block text-sm font-medium text-(--text-main)">
+              Full Name
+            </span>
+            <input
+              name="name"
+              type="text"
+              placeholder="Enter your full name"
+              value={form.name}
+              onChange={handleChange}
+              required
+              className={fieldClass}
+            />
+          </label>
 
           <div className="flex gap-3">
-            <input
-              name="age"
-              type="number"
-              placeholder="Age"
-              value={form.age}
-              onChange={handleChange}
-              required
-              className="input w-full"
-            />
+            <label className="block w-full">
+              <span className="mb-2 block text-sm font-medium text-(--text-main)">
+                Age
+              </span>
+              <input
+                name="age"
+                type="number"
+                placeholder="Age"
+                value={form.age}
+                onChange={handleChange}
+                required
+                className={fieldClass}
+              />
+            </label>
 
-            <select
-              name="gender"
-              value={form.gender}
-              onChange={handleChange}
-              required
-              className="input w-full"
-            >
-              <option value="">Gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </select>
+            <label className="block w-full">
+              <span className="mb-2 block text-sm font-medium text-(--text-main)">
+                Gender
+              </span>
+              <select
+                name="gender"
+                value={form.gender}
+                onChange={handleChange}
+                required
+                className={`${fieldClass} ${form.gender ? "text-(--text-main)" : "text-(--text-sub)"}`}
+              >
+                <option value="">Select gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </label>
           </div>
 
-          <input
-            name="email"
-            type="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            required
-            className="input"
-          />
+          <label className="block">
+            <span className="mb-2 block text-sm font-medium text-(--text-main)">
+              Email
+            </span>
+            <input
+              name="email"
+              type="email"
+              placeholder="you@example.com"
+              value={form.email}
+              onChange={handleChange}
+              required
+              className={fieldClass}
+            />
+          </label>
 
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-            required
-            className="input"
-          />
+          <label className="block">
+            <span className="mb-2 block text-sm font-medium text-(--text-main)">
+              Password
+            </span>
+            <input
+              name="password"
+              type="password"
+              placeholder="Minimum 8 characters"
+              value={form.password}
+              onChange={handleChange}
+              required
+              className={fieldClass}
+            />
+          </label>
 
-          <input
-            name="confirmPassword"
-            type="password"
-            placeholder="Confirm Password"
-            value={form.confirmPassword}
-            onChange={handleChange}
-            required
-            className="input"
-          />
+          <label className="block">
+            <span className="mb-2 block text-sm font-medium text-(--text-main)">
+              Confirm Password
+            </span>
+            <input
+              name="confirmPassword"
+              type="password"
+              placeholder="Re-enter your password"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              required
+              className={fieldClass}
+            />
+          </label>
 
           <button
             type="submit"
