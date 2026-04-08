@@ -4,6 +4,7 @@ import ThemeToggle from "../components/ThemeToggle";
 
 function LandingPage() {
   const [pos, setPos] = useState({ x: 0, y: 0 });
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
 
   useEffect(() => {
     const move = (e) => {
@@ -11,6 +12,21 @@ function LandingPage() {
     };
     window.addEventListener("mousemove", move);
     return () => window.removeEventListener("mousemove", move);
+  }, []);
+
+  useEffect(() => {
+    const checkAuth = () => setIsLoggedIn(!!localStorage.getItem("token"));
+    checkAuth();
+
+    window.addEventListener("storage", checkAuth);
+    window.addEventListener("focus", checkAuth);
+    window.addEventListener("auth-changed", checkAuth);
+
+    return () => {
+      window.removeEventListener("storage", checkAuth);
+      window.removeEventListener("focus", checkAuth);
+      window.removeEventListener("auth-changed", checkAuth);
+    };
   }, []);
 
   return (
@@ -37,19 +53,39 @@ function LandingPage() {
         </p>
 
         <div className="mt-10 flex gap-4 flex-wrap justify-center">
-          <Link
-            to="/signup"
-            className="bg-[var(--primary)] text-white px-8 py-3 rounded-xl font-semibold transition hover:scale-105 shadow-lg"
-          >
-            Get Started
-          </Link>
+          {isLoggedIn ? (
+            <>
+              <Link
+                to="/profile"
+                className="bg-[var(--primary)] text-white px-8 py-3 rounded-xl font-semibold transition hover:scale-105 shadow-lg"
+              >
+                Go to Profile
+              </Link>
 
-          <Link
-            to="/login"
-            className="border border-[var(--secondary)] text-[var(--secondary)] px-8 py-3 rounded-xl hover:bg-[var(--secondary)]/10 transition"
-          >
-            Login
-          </Link>
+              <Link
+                to="/programs"
+                className="border border-[var(--secondary)] text-[var(--secondary)] px-8 py-3 rounded-xl hover:bg-[var(--secondary)]/10 transition"
+              >
+                Explore Programs
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/signup"
+                className="bg-[var(--primary)] text-white px-8 py-3 rounded-xl font-semibold transition hover:scale-105 shadow-lg"
+              >
+                Get Started
+              </Link>
+
+              <Link
+                to="/login"
+                className="border border-[var(--secondary)] text-[var(--secondary)] px-8 py-3 rounded-xl hover:bg-[var(--secondary)]/10 transition"
+              >
+                Login
+              </Link>
+            </>
+          )}
         </div>
       </section>
       {/* Features */}
@@ -73,17 +109,21 @@ function LandingPage() {
       </section>
       {/* CTA */}
       <section className="relative z-10 mt-32 text-center px-6">
-        <h3 className="text-4xl font-bold">Start Your Evolution</h3>
+        <h3 className="text-4xl font-bold">
+          {isLoggedIn ? "Keep Your Momentum" : "Start Your Evolution"}
+        </h3>
 
         <p className="text-[var(--text-sub)] mt-4">
-          Join the next generation of fitness.
+          {isLoggedIn
+            ? "Jump back in and log your next session."
+            : "Join the next generation of fitness."}
         </p>
 
         <Link
-          to="/signup"
+          to={isLoggedIn ? "/workout" : "/signup"}
           className="mt-8 inline-block bg-[var(--success)] text-black px-10 py-3 rounded-xl font-semibold transition hover:scale-105 shadow-lg"
         >
-          Join Now
+          {isLoggedIn ? "Open Workout" : "Join Now"}
         </Link>
       </section>
       {/* Footer */}
@@ -99,20 +139,20 @@ const features = [
     title: "Smart Tracking",
     desc: "Track calories, workouts, and progress with precision.",
     icon: "📊",
-    color: "#00D1FF",
+    color: "#00D1FF"
   },
   {
     title: "AI Coaching",
     desc: "Adaptive training plans based on your performance.",
     icon: "🤖",
-    color: "#7C5CFF",
+    color: "#7C5CFF"
   },
   {
     title: "Elite Physique",
     desc: "Designed for aesthetics, strength, and longevity.",
     icon: "🔥",
-    color: "#FF3B3B",
-  },
+    color: "#FF3B3B"
+  }
 ];
 
 export default LandingPage;

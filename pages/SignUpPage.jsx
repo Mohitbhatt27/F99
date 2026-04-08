@@ -10,7 +10,7 @@ function Signup() {
     gender: "",
     email: "",
     password: "",
-    confirmPassword: "",
+    confirmPassword: ""
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -59,15 +59,15 @@ function Signup() {
       const response = await fetch(`${BASE_URL}/auth/signup`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           name: form.name,
           email: form.email,
           password: form.password,
           gender: form.gender.toLowerCase(),
-          age: Number(form.age),
-        }),
+          age: Number(form.age)
+        })
       });
 
       const result = await response.json();
@@ -86,6 +86,8 @@ function Signup() {
       } else {
         console.warn("User ID missing in response");
       }
+
+      window.dispatchEvent(new Event("auth-changed"));
 
       navigate("/profile");
     } catch (err) {

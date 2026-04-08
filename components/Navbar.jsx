@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { api } from "../src/utils/api";
 import ThemeToggle from "./ThemeToggle";
@@ -6,15 +6,40 @@ import logo from "../src/assets/logo.png";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     const check = () => setIsLoggedIn(!!localStorage.getItem("token"));
     check();
+
     window.addEventListener("storage", check);
-    return () => window.removeEventListener("storage", check);
-  }, []);
+    window.addEventListener("auth-changed", check);
+
+    return () => {
+      window.removeEventListener("storage", check);
+      window.removeEventListener("auth-changed", check);
+    };
+  }, [location.pathname]);
+
+  const clearBrowserCookies = () => {
+    const cookies = document.cookie ? document.cookie.split(";") : [];
+
+    cookies.forEach((cookie) => {
+      const separatorIndex = cookie.indexOf("=");
+      const cookieName =
+        separatorIndex > -1
+          ? cookie.slice(0, separatorIndex).trim()
+          : cookie.trim();
+
+      if (!cookieName) return;
+
+      document.cookie = `${cookieName}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+      document.cookie = `${cookieName}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
+      document.cookie = `${cookieName}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${window.location.hostname}`;
+    });
+  };
 
   async function handleLogout() {
     setLoggingOut(true);
@@ -23,7 +48,9 @@ export default function Navbar() {
     } catch {
       // Even if API call fails, clear token and redirect
     } finally {
-      localStorage.removeItem("token");
+      localStorage.clear();
+      clearBrowserCookies();
+      window.dispatchEvent(new Event("auth-changed"));
       setIsLoggedIn(false);
       setLoggingOut(false);
       navigate("/");

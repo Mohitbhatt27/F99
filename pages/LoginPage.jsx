@@ -34,12 +34,12 @@ function Login() {
       const response = await fetch(`${BASE_URL}/auth/signin`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           email: form.email,
-          password: form.password,
-        }),
+          password: form.password
+        })
       });
       console.log("data is", response);
 
@@ -51,6 +51,7 @@ function Login() {
       }
 
       localStorage.setItem("token", data.token);
+      window.dispatchEvent(new Event("auth-changed"));
 
       navigate("/profile");
     } catch (err) {
