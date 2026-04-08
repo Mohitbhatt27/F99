@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 import LandingPage from "../pages/LandingPage.jsx";
 import Login from "../pages/LoginPage.jsx";
 import Signup from "../pages/SignUpPage.jsx";
@@ -14,6 +15,12 @@ import ForgotPassword from "../pages/ForgotPassword";
 import ProgressPhotos from "../pages/ProgressPhotos";
 import ResetPassword from "../pages/ResetPassword";
 import EditProfile from "../pages/EditProfile";
+
+//  FIXED IMPORTS
+import Programs from "../pages/Programs";
+import Workout from "../pages/Workout";
+
+//  Theme handling
 const savedTheme = localStorage.getItem("theme");
 
 if (savedTheme === "dark") {
@@ -25,19 +32,13 @@ if (savedTheme === "dark") {
   }
 }
 
+//  Router
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
-      {
-        path: "/progress-photos",
-        element: (
-          <ProtectedRoute>
-            <ProgressPhotos />
-          </ProtectedRoute>
-        ),
-      },
+      // Public routes
       {
         path: "/",
         element: <LandingPage />,
@@ -50,8 +51,16 @@ const router = createBrowserRouter([
         path: "/signup",
         element: <Signup />,
       },
+      {
+        path: "/forgot-password",
+        element: <ForgotPassword />,
+      },
+      {
+        path: "/reset-password",
+        element: <ResetPassword />,
+      },
 
-      // Protected
+      // Protected routes
       {
         path: "/profile",
         element: (
@@ -77,17 +86,36 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/forgot-password",
-        element: <ForgotPassword />,
+        path: "/progress-photos",
+        element: (
+          <ProtectedRoute>
+            <ProgressPhotos />
+          </ProtectedRoute>
+        ),
+      },
+
+      //  NEW FEATURES (Protected)
+      {
+        path: "/programs",
+        element: (
+          <ProtectedRoute>
+            <Programs />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: "/reset-password",
-        element: <ResetPassword />,
+        path: "/workout",
+        element: (
+          <ProtectedRoute>
+            <Workout />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
 ]);
 
+//  App render
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <FoodProvider>

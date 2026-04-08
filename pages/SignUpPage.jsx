@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../src/utils/api";
 
 function Signup() {
   const navigate = useNavigate();
@@ -15,7 +14,9 @@ function Signup() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
   const BASE_URL = import.meta.env.VITE_BASE_URL;
+
   // Redirect if already logged in
   useEffect(() => {
     if (localStorage.getItem("token")) navigate("/profile");
@@ -36,6 +37,7 @@ function Signup() {
     e.preventDefault();
     setError("");
 
+    // 🔍 validations
     if (form.password !== form.confirmPassword) {
       setError("Passwords do not match.");
       return;
@@ -52,8 +54,9 @@ function Signup() {
     }
 
     setLoading(true);
+
     try {
-      const data = await fetch(`${BASE_URL}/auth/signup`, {
+      const response = await fetch(`${BASE_URL}/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -67,9 +70,23 @@ function Signup() {
         }),
       });
 
-      const result = await data.json();
-      console.log("data is", result);
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Signup failed.");
+      }
+
+      console.log("Signup Response:", result);
+
+      // 🔥 FIX: store BOTH token + userId
       localStorage.setItem("token", result.token);
+
+      if (result.user && result.user._id) {
+        localStorage.setItem("userId", result.user._id);
+      } else {
+        console.warn("User ID missing in response");
+      }
+
       navigate("/profile");
     } catch (err) {
       setError(err.message || "Signup failed. Please try again.");
@@ -110,7 +127,7 @@ function Signup() {
             value={form.name}
             onChange={handleChange}
             required
-            className="bg-[var(--bg)] border border-[var(--text-sub)]/20 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] transition"
+            className="input"
           />
 
           <div className="flex gap-3">
@@ -121,16 +138,15 @@ function Signup() {
               value={form.age}
               onChange={handleChange}
               required
-              min="10"
-              max="100"
-              className="bg-[var(--bg)] border border-[var(--text-sub)]/20 rounded-lg px-4 py-3 text-sm w-full focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] transition"
+              className="input w-full"
             />
+
             <select
               name="gender"
               value={form.gender}
               onChange={handleChange}
               required
-              className="bg-[var(--bg)] border border-[var(--text-sub)]/20 rounded-lg px-4 py-3 text-sm w-full focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] transition"
+              className="input w-full"
             >
               <option value="">Gender</option>
               <option value="male">Male</option>
@@ -146,17 +162,17 @@ function Signup() {
             value={form.email}
             onChange={handleChange}
             required
-            className="bg-[var(--bg)] border border-[var(--text-sub)]/20 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] transition"
+            className="input"
           />
 
           <input
             name="password"
             type="password"
-            placeholder="Password (min 8 characters)"
+            placeholder="Password"
             value={form.password}
             onChange={handleChange}
             required
-            className="bg-[var(--bg)] border border-[var(--text-sub)]/20 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] transition"
+            className="input"
           />
 
           <input
@@ -166,13 +182,13 @@ function Signup() {
             value={form.confirmPassword}
             onChange={handleChange}
             required
-            className="bg-[var(--bg)] border border-[var(--text-sub)]/20 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] transition"
+            className="input"
           />
 
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 bg-[var(--primary)] text-black py-3 rounded-lg font-semibold transition hover:scale-[1.03] shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="mt-2 bg-[var(--primary)] text-black py-3 rounded-lg font-semibold transition hover:scale-[1.03] shadow-lg disabled:opacity-50"
           >
             {loading ? "Creating account..." : "Sign Up"}
           </button>

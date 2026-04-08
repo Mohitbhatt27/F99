@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import Loader from "../components/Loader";
 import "./App.css";
 import { api } from "./utils/api";
+
 export default function App() {
   const [loading, setLoading] = useState(true);
 

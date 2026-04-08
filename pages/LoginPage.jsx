@@ -41,14 +41,17 @@ function Login() {
           password: form.password,
         }),
       });
+      console.log("data is", response);
 
       const data = await response.json();
+      console.log("json datail", data);
 
       if (!response.ok) {
         throw new Error(data.message || "Login failed. Please try again.");
       }
 
       localStorage.setItem("token", data.token);
+
       navigate("/profile");
     } catch (err) {
       setError(err.message || "Login failed. Please try again.");
